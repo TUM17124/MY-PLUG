@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PRODUCTS</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 1rem;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: #f9f9f9;
+      color: #333;
+      background-image: url('image/image (1).jpg');
+      background-size: cover; /* Ensures the image covers the whole page */
+      background-position: center center; /* Centers the image */
+      background-repeat: no-repeat; /* Prevents the image from repeating */
+      height: 100vh; /* Ensures the background image covers the entire page height */
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.5rem; /* Padding to ensure content is spaced properly */
+      background: rgba(255, 255, 255, 0.8); /* Slightly more opaque background */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .background-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
+      z-index: 2; /* Higher z-index to stay above the container */
+    }
+
+    .full-screen-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5); /* Example of full-screen overlay */
+      z-index: 3; /* Above both container and background overlay */
+    }
+
+    h1, h2 {
+      font-size: 2rem;
+      text-align: center;
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    ul li {
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+    }
+
+    /* Responsive styling for smaller devices */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.2rem;
+        max-width: 90%; /* Allow more room on smaller screens */
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      ul li {
+        font-size: 1rem; /* Adjust font size for smaller screens */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+        max-width: 95%; /* Allow even more room on extra small screens */
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      h2 {
+        font-size: 1.4rem;
+      }
+
+      ul li {
+        font-size: 0.9rem; /* Adjust font size even further for mobile */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Full-screen overlay -->
+  <div class="full-screen-overlay"></div>
+
+  <!-- Background overlay -->
+  <div class="background-overlay"></div>
+
+  <!-- Main content container -->
+  <div class="container">
+    <h1>My Products</h1>
+    <p>
+      Welcome to my product page! Here you can find a variety of items that I offer. Each product is carefully selected to ensure quality and satisfaction. If you have any questions or need assistance, feel free to reach out!
+    </p>
+    <h2>Product List</h2>
+    <ul>
+      <li>Product 1: Description of product 1.</li>
+      <li>Product 2: Description of product 2.</li>
+      <li>Product 3: Description of product 3.</li>
+      <li>Product 4: Description of product 4.</li>
+      <li>Product 5: Description of product 5.</li>
+    </ul>
+  </div>
+
+</body>
+</html>
