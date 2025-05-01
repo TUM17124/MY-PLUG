@@ -43,16 +43,20 @@ function success(pos) {
         map.removeLayer(circle);
     }
 
-   marker= L.marker([lat, lon]).addTo(map)
-   circle= L.circle([lat, lon], { radius:accuracy}).addTo(map)
+    marker = L.marker([lat, lon]).addTo(map);
+    circle = L.circle([lat, lon], { radius: accuracy }).addTo(map);
 
-   if(!zoomed){
-   zoomed = map.fitBounds(circle.getBounds());
-   }
+    // Coordinates of marked location (Kabarak)
+    const markedLatLng = L.latLng(-0.27817, 36.05861);
+    const userLatLng = L.latLng(lat, lon);
 
-   map.setView([lat, lon]);
+    // Create a bounds that includes both points
+    const bounds = L.latLngBounds([userLatLng, markedLatLng]);
 
+    // Fit map to bounds
+    map.fitBounds(bounds, { padding: [50, 50] }); // Optional padding for better view
 }
+
 function error(err) {
     if (err.code == 1) {
         alert("Please allow location access to use this feature.");
