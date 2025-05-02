@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=`, initial-scale=1.0">
-    <title>MY PLUG</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MY PLUG</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""
   />
@@ -68,13 +70,95 @@
 
   <div id="map"></div>
 
-    <script>
-        var map = L.map('map');
-        map.setView([51.505, -0.09], 13);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+  <script>
+    const warningEl = document.getElementById('compass-warning');
+
+    function handleOrientation(event) {
+        if (event.alpha === null) {
+            warningEl.textContent = "Compass not supported on this device.";
+            return;
+        }
+
+        const arrow = document.getElementById('arrow');
+        arrow.style.transform = `rotate(${-event.alpha}deg)`;
+        warningEl.textContent = ""; // Clear warning if supported
+    }
+
+    // Request permission on iOS or fallback
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        document.body.addEventListener('click', function () {
+            DeviceOrientationEvent.requestPermission().then(response => {
+                if (response === 'granted') {
+                    window.addEventListener('deviceorientation', handleOrientation);
+                } else {
+                    warningEl.textContent = "Permission denied for motion sensors.";
+                }
+            }).catch(() => {
+                warningEl.textContent = "Error accessing device orientation.";
+            });
+        });
+    } else {
+        if ('DeviceOrientationEvent' in window) {
+            window.addEventListener('deviceorientation', handleOrientation);
+        } else {
+            warningEl.textContent = "Device orientation not supported.";
+        }
+    }
+</script>
+
+
+  <script>
+    // Enable compass on button click
+    const arrow = document.getElementById('arrow');
+    const enableBtn = document.getElementById('enableCompass');
+
+    function handleOrientation(event) {
+      const alpha = event.alpha;
+      if (alpha !== null) {
+        arrow.style.transform = `rotate(${-alpha}deg)`;
+      }
+    }
+
+    enableBtn.addEventListener('click', () => {
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(permissionState => {
+            if (permissionState === 'granted') {
+              window.addEventListener('deviceorientation', handleOrientation);
+              enableBtn.style.display = 'none';
+            } else {
+              alert("Permission denied. Compass won't work.");
+            }
+          })
+          .catch(console.error);
+      } else {
+        // Android or older iOS
+        window.addEventListener('deviceorientation', handleOrientation);
+        enableBtn.style.display = 'none';
+      }
+    });
+  </script>
+
+  <script>
+    // Start video stream from camera
+    const video = document.getElementById('video');
+    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+      .then((stream) => {
+        video.srcObject = stream;
+      })
+      .catch((err) => {
+        alert('Camera access denied or not available: ' + err.message);
+      });
+  </script>
+
+  <script>
+    // Leaflet Map Setup
+    var map = L.map('map');
+    map.setView([51.505, -0.09], 13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
 
     navigator.geolocation.watchPosition(success, error);
 
@@ -90,50 +174,48 @@
         map.removeLayer(circle);
       }
 
-   marker= L.marker([lat, lon]).addTo(map)
-   circle= L.circle([lat, lon], { radius:accuracy}).addTo(map)
+      marker = L.marker([lat, lon]).addTo(map);
+      circle = L.circle([lat, lon], { radius: accuracy }).addTo(map);
 
-   if(!zoomed){
-   zoomed = map.fitBounds(circle.getBounds());
-   }
+      const markedLatLng = L.latLng(-0.27817, 36.05861);
+      const userLatLng = L.latLng(lat, lon);
 
-   map.setView([lat, lon]);
+      const bounds = L.latLngBounds([userLatLng, markedLatLng]);
+      map.fitBounds(bounds, { padding: [50, 50] });
+    }
 
-}
-function error(err) {
-    if (err.code == 1) {
+    function error(err) {
+      if (err.code == 1) {
         alert("Please allow location access to use this feature.");
       } else if (err.code == 2) {
         alert("Location not found. Please check your GPS settings.");
       }
     }
-   
-}
-    // Define custom WhatsApp icons
-    var whatsappIcon = L.icon({
-            iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg',
-            iconSize: [100, 100],
-            iconAnchor: [20, 40],
-            popupAnchor: [0, -40]
-        });
-         // Add marker at KICC with WhatsApp popup link
-         L.marker([-0.27817, 36.05861], { icon: whatsappIcon }).addTo(map)
-  .bindPopup(`
-    <div style="text-align:center;">
-      <p>
-        <a href="https://wa.me/254741389658?text=Hey%2C%20I%27m%20around%20Kabarak" target="_blank">
-          📱 Chat on WhatsApp
-        </a>
-      </p>
-      <p>
-        <a href="productcs.html" target="_blank">
-          🛒 Check My Products
-        </a>
-      </p>
-    </div>
-  `)
-  .openPopup();
 
-    </script>
+    // WhatsApp Marker
+    const whatsappIcon = L.icon({
+      iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg',
+      iconSize: [100, 100],
+      iconAnchor: [20, 40],
+      popupAnchor: [0, -40]
+    });
+
+    L.marker([-0.27817, 36.05861], { icon: whatsappIcon }).addTo(map)
+      .bindPopup(`
+        <div style="text-align:center;">
+          <p>
+            <a href="https://wa.me/254741389658?text=Hey%2C%20I%27m%20around%20Kabarak" target="_blank">
+              📱 Chat on WhatsApp
+            </a>
+          </p>
+          <p>
+            <a href="productcs.html" target="_blank">
+              🛒 Check My Products
+            </a>
+          </p>
+        </div>
+      `)
+      .openPopup();
+  </script>
 </body>
 </html>
